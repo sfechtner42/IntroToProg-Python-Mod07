@@ -3,7 +3,7 @@
 # Desc: This assignment demonstrates using data classes with structured error handling
 # Change Log: (Who, When, What)
 #   RRoot,1/1/2030,Created Script
-#   Sabrina Fechtner, 11/24/2023, Imported A06
+#   Sabrina Fechtner, 11/24/2023, Imported A06 and Modified for A07
 # ------------------------------------------------------------------------------------------ #
 import json
 from typing import TextIO, List
@@ -24,36 +24,40 @@ FILE_NAME: str = "Enrollments.json"
 
 # Define Classes
 class Person:
-    pass
-
-
-class Student:
-    def __init__(self, student_first_name: str, student_last_name: str, course_name: str) -> None:
-        self._student_first_name = student_first_name
-        self._student_last_name = student_last_name
-        self.course_name = course_name
+    def __init__(self, first_name: str, last_name: str) -> None:
+        self._first_name = first_name
+        self._last_name = last_name
 
     @property
-    def student_first_name(self) -> str:
-        return self._student_first_name.capitalize()
+    def first_name(self) -> str:
+        return self._first_name.capitalize()
 
-    @student_first_name.setter
-    def student_first_name(self, value):
+    @first_name.setter
+    def first_name(self, value):
         if value.isalpha():
-            self._student_first_name = value
+            self._first_name = value
         else:
             raise ValueError("The first name cannot be alphanumeric. Please re-enter the first name.")
 
     @property
-    def student_last_name(self) -> str:
-        return self._student_last_name.capitalize()
+    def last_name(self) -> str:
+        return self._last_name.capitalize()
 
-    @student_last_name.setter
-    def student_last_name(self, value):
+    @last_name.setter
+    def last_name(self, value):
         if value.isalpha():
-            self._student_last_name = value
+            self._last_name = value
         else:
             raise ValueError("The last name cannot be alphanumeric. Please re-enter the last name.")
+
+    def __str__(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
+
+class Student(Person):
+    def __init__(self, student_first_name: str, student_last_name: str, course_name: str) -> None:
+        super().__init__(first_name=student_first_name, last_name=student_last_name)
+        self.course_name = course_name
 
     @property
     def student_course_name(self) -> str:
@@ -62,6 +66,10 @@ class Student:
     @student_course_name.setter
     def student_course_name(self, value):
         self.course_name = str(value)
+
+    def __str__(self) -> str:
+        return f"{super().__str__()} has been registered for {self.student_course_name}"
+
 
 # Define the Data Variables
 students: list[Student] = []
@@ -122,6 +130,7 @@ class FileProcessor:
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
         Sabrina Fechtner, 11.16.2023, Incorporated Function
+        Sabrina Fechtner, 11.24.2023, Pulled into A07
         :param: file name = JSON file and roster = student data
         :return: None
         """
@@ -130,8 +139,8 @@ class FileProcessor:
             json_data: list[dict[str, str, str]] = []
             for student in roster:
                 json_data.append({
-                    "student_first_name": student.student_first_name,
-                    "student_last_name": student.student_last_name,
+                    "student_first_name": student.first_name,
+                    "student_last_name": student.last_name,
                     "course_name": student.student_course_name
                 }
                 )
@@ -153,6 +162,7 @@ class IO:
     ChangeLog: (Who, When, What)
     RRoot,1.4.2030,Added a function to display custom error messages
     Sabrina Fechtner 11.17.23, Incorporated in A06
+    Sabrina Fechtner 11.24.23, Pulled into A07
     """
 
     @staticmethod
@@ -162,7 +172,7 @@ class IO:
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
         Sabrina Fechtner, 11.16.2023, Incorporated into A06
-
+        Sabrina Fechter, 11.24.2023, Pulled into A07
         :return: None
         """
         print(message, end="\n\n")
@@ -212,9 +222,9 @@ class IO:
         """
         print("\nThe current data is:")
         for student in student_data:
-            student_first_name = student.student_first_name
-            student_last_name = student.student_last_name
-            student_course_name = student.student_course_name
+            student_first_name = student.first_name
+            student_last_name = student.last_name
+            student_course_name = student.course_name
             print(student_first_name, student_last_name, student_course_name)
 
     @staticmethod
@@ -238,21 +248,23 @@ class IO:
 
             try:
                 # Set the properties individually
-                student.student_first_name = student_first_name
-                student.student_last_name = student_last_name
+                student.first_name = student_first_name
+                student.last_name = student_last_name
                 student.student_course_name = student_course_name
 
                 # Create a new instance with validated properties
-                student = Student(student.student_first_name, student.student_last_name, student.student_course_name)
+                student = Student(student.first_name, student.last_name, student.student_course_name)
                 student_data.append(student)
 
                 print(
-                    f"You have registered {student.student_first_name} {student.student_last_name} for {student.student_course_name}.")
+                    f"You have registered {student.first_name} {student.last_name} for {student.student_course_name}.")
                 break  # exit the loop if registration is successful
             except ValueError as e:
                 IO.output_error_messages(f"Error registering student: {e}")
 
         return student_data
+
+
 # Main Program:
 
 students: list[Student] = FileProcessor.read_data_from_file(file_name=FILE_NAME)
