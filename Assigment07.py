@@ -252,7 +252,7 @@ class IO:
 
                 print(
                     f"You have registered {student.first_name} {student.last_name} for {student.student_course_name}.")
-                break  # exit the loop if registration is successful
+                break  # if registration is successful
             except ValueError as e:
                 IO.output_error_messages(f"Error registering student: {e}")
 
