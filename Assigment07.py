@@ -70,12 +70,6 @@ class Student(Person):
     def __str__(self) -> str:
         return f"{super().__str__()} has been registered for {self.student_course_name}"
 
-
-# Define the Data Variables
-students: list[Student] = []
-menu_choice: str
-
-
 # File Processing Functions
 class FileProcessor:
     """
@@ -198,6 +192,7 @@ class IO:
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
         Sabrina Fechtner, 11.16.2023, Incorporated into A06
+        Sabrina Fechtner, 11.25.2023 Pulled into A07
 
         :return: User Choice
             """
@@ -235,7 +230,7 @@ class IO:
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
         Sabrina Fechtner, 11.16.2023, Incorporated into A06
-
+        Sabrina Fechtner, 11.24.2023, pulled in A07
         :return: None
         """
         while True:
@@ -247,7 +242,6 @@ class IO:
             student_course_name: str = input("Please enter the course name: ")
 
             try:
-                # Set the properties individually
                 student.first_name = student_first_name
                 student.last_name = student_last_name
                 student.student_course_name = student_course_name
@@ -264,6 +258,9 @@ class IO:
 
         return student_data
 
+# Define the Data Variables
+students: list[Student] = []
+menu_choice: str
 
 # Main Program:
 
