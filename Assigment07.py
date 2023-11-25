@@ -29,40 +29,39 @@ class Person:
 
 class Student:
     def __init__(self, student_first_name: str, student_last_name: str, course_name: str) -> None:
-        self.student_first_name = student_first_name
-        self.student_last_name = student_last_name
+        self._student_first_name = student_first_name
+        self._student_last_name = student_last_name
         self.course_name = course_name
 
     @property
-    def get_first_name(self) -> str:
+    def student_first_name(self) -> str:
         return self._student_first_name.capitalize()
 
-    @get_first_name.setter
-    def get_first_name(self, value):
+    @student_first_name.setter
+    def student_first_name(self, value):
         if value.isalpha():
             self._student_first_name = value
         else:
             raise ValueError("The first name cannot be alphanumeric. Please re-enter the first name.")
 
     @property
-    def get_last_name(self) -> str:
+    def student_last_name(self) -> str:
         return self._student_last_name.capitalize()
 
-    @get_last_name.setter
-    def get_last_name(self, value):
+    @student_last_name.setter
+    def student_last_name(self, value):
         if value.isalpha():
             self._student_last_name = value
         else:
             raise ValueError("The last name cannot be alphanumeric. Please re-enter the last name.")
 
     @property
-    def get_course_name(self) -> str:
+    def student_course_name(self) -> str:
         return self.course_name.capitalize()
 
-    @get_course_name.setter
-    def get_course_name(self, value):
+    @student_course_name.setter
+    def student_course_name(self, value):
         self.course_name = str(value)
-
 
 # Define the Data Variables
 students: list[Student] = []
@@ -131,9 +130,9 @@ class FileProcessor:
             json_data: list[dict[str, str, str]] = []
             for student in roster:
                 json_data.append({
-                    "student_first_name": student.get_first_name,
-                    "student_last_name": student.get_last_name,
-                    "course_name": student.get_course_name
+                    "student_first_name": student.student_first_name,
+                    "student_last_name": student.student_last_name,
+                    "course_name": student.student_course_name
                 }
                 )
             with open(file_name, "w") as file:
@@ -213,9 +212,9 @@ class IO:
         """
         print("\nThe current data is:")
         for student in student_data:
-            student_first_name = student.get_first_name
-            student_last_name = student.get_last_name
-            student_course_name = student.get_course_name
+            student_first_name = student.student_first_name
+            student_last_name = student.student_last_name
+            student_course_name = student.student_course_name
             print(student_first_name, student_last_name, student_course_name)
 
     @staticmethod
@@ -230,29 +229,30 @@ class IO:
         :return: None
         """
         while True:
+            # Create an instance of Student with valid initial values
+            student = Student("", "", "")
+
             student_first_name: str = input("Please enter first name: ")
             student_last_name: str = input("Please enter last name: ")
-            course_name: str = input("Please enter the course name: ")
-
-            student = Student("", "", "")  # Create an instance
+            student_course_name: str = input("Please enter the course name: ")
 
             try:
-                student.get_first_name = student_first_name
-                student.get_last_name = student_last_name
-                student.get_course_name = course_name
+                # Set the properties individually
+                student.student_first_name = student_first_name
+                student.student_last_name = student_last_name
+                student.student_course_name = student_course_name
 
                 # Create a new instance with validated properties
-                student = Student(student.get_first_name, student.get_last_name, student.get_course_name)
+                student = Student(student.student_first_name, student.student_last_name, student.student_course_name)
                 student_data.append(student)
 
                 print(
-                    f"You have registered {student.get_first_name} {student.get_last_name} for {student.get_course_name}.")
+                    f"You have registered {student.student_first_name} {student.student_last_name} for {student.student_course_name}.")
                 break  # exit the loop if registration is successful
             except ValueError as e:
                 IO.output_error_messages(f"Error registering student: {e}")
 
         return student_data
-
 # Main Program:
 
 students: list[Student] = FileProcessor.read_data_from_file(file_name=FILE_NAME)
