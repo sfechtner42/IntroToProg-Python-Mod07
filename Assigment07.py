@@ -28,19 +28,40 @@ class Person:
 
 
 class Student:
-    def __init__(self, student_first_name:str, student_last_name:str, course_name:str) -> None:
-        self._student_first_name = student_first_name
-        self._student_last_name = student_last_name
-        self._course_name = course_name
+    def __init__(self, student_first_name: str, student_last_name: str, course_name: str) -> None:
+        self.student_first_name = student_first_name
+        self.student_last_name = student_last_name
+        self.course_name = course_name
+
     @property
     def get_first_name(self) -> str:
         return self._student_first_name.capitalize()
+
+    @get_first_name.setter
+    def get_first_name(self, value):
+        if value.isalpha():
+            self._student_first_name = value
+        else:
+            raise ValueError("The first name cannot be alphanumeric. Please re-enter the first name.")
+
     @property
     def get_last_name(self) -> str:
         return self._student_last_name.capitalize()
+
+    @get_last_name.setter
+    def get_last_name(self, value):
+        if value.isalpha():
+            self._student_last_name = value
+        else:
+            raise ValueError("The last name cannot be alphanumeric. Please re-enter the last name.")
+
     @property
     def get_course_name(self) -> str:
-        return self._course_name.capitalize()
+        return self.course_name.capitalize()
+
+    @get_course_name.setter
+    def get_course_name(self, value):
+        self.course_name = str(value)
 
 
 # Define the Data Variables
@@ -195,10 +216,12 @@ class IO:
             student_first_name = student.get_first_name
             student_last_name = student.get_last_name
             student_course_name = student.get_course_name
-            print(student_first_name,student_last_name, student_course_name)
+            print(student_first_name, student_last_name, student_course_name)
+
     @staticmethod
-    def input_student_data(student_data: list[Student]):
-        """ This function incorporates user choice from the menu
+    def input_student_data(student_data: List[Student]) -> List[Student]:
+        """
+        This function incorporates user choice from the menu
 
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
@@ -207,31 +230,28 @@ class IO:
         :return: None
         """
         while True:
+            student_first_name: str = input("Please enter first name: ")
+            student_last_name: str = input("Please enter last name: ")
+            course_name: str = input("Please enter the course name: ")
+
+            student = Student("", "", "")  # Create an instance
+
             try:
-                student_first_name = input("Enter the student's first name: ")
-                if not student_first_name.isalpha():
-                    raise ValueError("The first name cannot be alphanumeric. Please re-enter the first name.")
-                break
+                student.get_first_name = student_first_name
+                student.get_last_name = student_last_name
+                student.get_course_name = course_name
+
+                # Create a new instance with validated properties
+                student = Student(student.get_first_name, student.get_last_name, student.get_course_name)
+                student_data.append(student)
+
+                print(
+                    f"You have registered {student.get_first_name} {student.get_last_name} for {student.get_course_name}.")
+                break  # exit the loop if registration is successful
             except ValueError as e:
-                print(e)
-        while True:
-            try:
-                student_last_name = input("Enter the student's last name: ")
-                if not student_last_name.isalpha():
-                    raise ValueError("The last name cannot be alphanumeric. Please re-enter the last name.")
-                break
-            except ValueError as e:
-                print(e)
+                IO.output_error_messages(f"Error registering student: {e}")
 
-        course_name = input("Please enter the name of the course: ")
-
-        student = Student(student_first_name, student_last_name, course_name)
-
-        student_data.append(student)
-
-        print(f"You have registered {student_first_name} {student_last_name} for {course_name}.")
         return student_data
-
 
 # Main Program:
 
